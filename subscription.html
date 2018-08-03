@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    let Event =(function(){
+        let list = {};
+        let addListen
+        let trigger
+        let remove
+        //訂閲
+        addListen = function(key,fn){
+          if(!list[key]){
+              list[key] = []
+          }
+          list[key].push(fn);
+          
+        }
+        //發佈
+        trigger = function(){
+            let key = [].shift.call(arguments); //改变数组
+            let fns =list[key];
+            if(!fns||fns.length == 0){
+              return false
+            }
+            for(let i = 0;i<fns.length;i++){
+               fns[i].apply(this,arguments)
+            }
+        }
+        //取消订阅
+        remove = function(key,fn){
+            let fns = list[key];
+            if(!fns.length&&!fns){
+                return false
+            }
+            if(!fn){
+                fns&&(fns.length = 0);
+            }else{
+                for(var j =0;j<fns.length;j++){
+                    if(fn == fns[j]){
+                        fns.splice(j,1)
+                    }
+                }
+
+            }
+
+        }
+        console.log(list)
+        return{
+            addListen,
+            trigger,
+            remove  
+        }
+
+    }())
+  
+  console.log(Event)
+  Event.addListen("西瓜",function(val){
+      console.log("我要的是西瓜",val)
+  })
+  Event.addListen("西红柿",function(){
+      console.log("我要的是西红柿")
+  })
+  Event.trigger("西瓜","不爱吃黄瓜")
+  Event.trigger("西红柿","不爱吃西瓜")
+  Event.remove("西瓜")
+    </script>
+</body>
+</html>
